@@ -4,43 +4,58 @@
     //change todos input box
     //todo input box
     //todo counter
-    //toggle all todos
+
+    // idIncrease: function (position) {
+            //     for (var i = 0; i < arrayPosition.length; i++) {
+            //         newTodo.id = i+1;
+            //     }
+            // }
 
 
-    var todoList1 = [];
-    var todoList2 = [];
+    var allTodoLists = [];
+    var addTodoCounter = 0;
 
-    function addTodo(todoList, todo) {
+    function createTodoList() {
+        allTodoLists.push([]);
+    }
+
+    function addTodo(position, todo) {
+        arrayPosition = allTodoLists[position];
+        
         var newTodo = {
             todo: todo,
-            completed: false
+            completed: false,
+            id: addTodoCounter,
         }
-        todoList.push(newTodo)
-        var thisTodoList = todoList;
+        addTodoCounter++
+        allTodoLists[position].push(newTodo)
+
     }
     
-    function deleteTodo(todoList, position) {
-        todoList.splice(position, 1);
+    function deleteTodo(todoListPosition, todoPosition) {
+        allTodoLists[todoListPosition].splice(todoPosition, 1);
     }
     
     function deleteAll(todoList) {
         todoList.splice(0, todoList.length);
     }
     
-    function changeTodo(todoList, todoText, position) {
-        todoList[position].todo = todoText;
+    function changeTodo(todoListPosition, todoPosition, todoText) {
+        var arrayPosition = allTodoLists[todoListPosition];
+        arrayPosition[todoPosition].todo = todoText;
     }
     
-    function toggleCompleted(todoList, position) {
-        todoList[position].completed = !todoList[position].completed;
+    function toggleCompleted(todoListPosition, todoPosition) {
+        var arrayPosition = allTodoLists[todoListPosition];
+        arrayPosition[todoPosition].completed = !arrayPosition[todoPosition].completed
     }
     
-    function toggleAll(todoList) {
+    function toggleAll(todoListPosition) {
         var isNotCompleted = 0;
-    
-        /* Check if todo is true or false and increment appropriate variable. */
+        var arrayPosition = allTodoLists[todoListPosition];
+        /* Check if todo is true or false and increment. */
         
-        todoList.forEach(function (todo) {
+        arrayPosition.forEach(function (todo) {
             if (todo.completed === false) {
                 isNotCompleted++;
             }
@@ -48,7 +63,7 @@
     
         /* Set all todos to true or false */
     
-        todoList.forEach(function (todo) {
+        arrayPosition.forEach(function (todo) {
             if (isNotCompleted > 0) {
                 todo.completed = true;
             } else {
@@ -57,11 +72,22 @@
         }) 
     }
         
-    function displayTodos(todoList) {
+    function displayTodos(todoListPosition) {
+        var arrayPosition = allTodoLists[todoListPosition];
         console.log("My Todos: ");
-        for (var i = 0; i < todoList.length; i++) {
-            console.log(todoList[i]);
+        for (var i = 0; i < arrayPosition.length; i++) {
+            console.log(arrayPosition[i]);
             
         }
     }
 
+
+
+
+    createTodoList();
+    createTodoList();
+    addTodo(1, 'first');
+    addTodo(1, 'second');
+    toggleCompleted(1, 1);
+    changeTodo(1, 1, 'test');
+    displayTodos(1);
