@@ -5,13 +5,6 @@
     //todo input box
     //todo counter
 
-    // idIncrease: function (position) {
-            //     for (var i = 0; i < arrayPosition.length; i++) {
-            //         newTodo.id = i+1;
-            //     }
-            // }
-
-
     var allTodoLists = [];
     var addTodoCounter = 0;
 
