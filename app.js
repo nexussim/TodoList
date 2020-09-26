@@ -4,35 +4,40 @@
     //change todos input box
     //todo input box
     //todo counter
-    //toggle all todos
 
 
-    var todoList1 = [];
-    var todoList2 = [];
+    var allTodoLists = [];
+    // var todoList1 = [];
+    // var todoList2 = [];
 
-    function addTodo(todoList, todo) {
+    function createTodoList() {
+        allTodoLists.push([]);
+    }
+
+    function addTodo(position, todo) {
         var newTodo = {
             todo: todo,
             completed: false
         }
-        todoList.push(newTodo)
-        var thisTodoList = todoList;
+        allTodoLists[position].push(newTodo)
     }
     
-    function deleteTodo(todoList, position) {
-        todoList.splice(position, 1);
+    function deleteTodo(todoListPosition, todoPosition) {
+        allTodoLists[todoListPosition].splice(todoPosition, 1);
     }
     
     function deleteAll(todoList) {
         todoList.splice(0, todoList.length);
     }
     
-    function changeTodo(todoList, todoText, position) {
-        todoList[position].todo = todoText;
+    function changeTodo(todoListPosition, todoPosition, todoText) {
+        var arrayPosition = allTodoLists[todoListPosition];
+        arrayPosition[todoPosition].todo = todoText;
     }
     
-    function toggleCompleted(todoList, position) {
-        todoList[position].completed = !todoList[position].completed;
+    function toggleCompleted(todoListPosition, todoPosition) {
+        var arrayPosition = allTodoLists[todoListPosition];
+        arrayPosition[todoPosition].completed = !arrayPosition[todoPosition].completed
     }
     
     function toggleAll(todoList) {
