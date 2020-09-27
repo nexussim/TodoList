@@ -29,9 +29,12 @@
 
     function findTodo(todoId) {
         for (var i = 0; i < allTodoLists.length; i++) {
+            if (returnedValue) {
+                return returnedValue;
+            }
             var todoListToCheck = allTodoLists[i]
             var returnedValue = todoListToCheck.find(function(todo){
-                return todo.id === todoId;     
+                return todo.id === todoId;
             })
         }
         return returnedValue;
@@ -42,13 +45,13 @@
         for (var i = 0; i < allTodoLists.length; i++) {
             var arrayWithTodo = allTodoLists[i].includes(foundTodo);
             if (arrayWithTodo) {
-                allTodoLists[i].splice(foundTodo, 1);
+                var todoIndex = allTodoLists[i].indexOf(foundTodo);
+                var arrayTodoIsIn = allTodoLists[i];
+                arrayTodoIsIn.splice(todoIndex, 1);
+                return;
             }
         }
     }
-    // function deleteTodo(todoListPosition, todoPosition) {
-    //     allTodoLists[todoListPosition].splice(todoPosition, 1);
-    // }
     
     function deleteAll(todoList) {
         todoList.splice(0, todoList.length);
