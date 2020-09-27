@@ -4,6 +4,8 @@
     //change todos input box
     //todo input box
     //todo counter
+    //filter active, completed, all
+    //clear completed
 
     var allTodoLists = [];
     var addTodoCounter = 0;
@@ -24,23 +26,42 @@
         allTodoLists[position].push(newTodo)
 
     }
-    
-    function deleteTodo(todoListPosition, todoPosition) {
-        allTodoLists[todoListPosition].splice(todoPosition, 1);
+
+    function findTodo(todoId) {
+        for (var i = 0; i < allTodoLists.length; i++) {
+            var todoListToCheck = allTodoLists[i]
+            var returnedValue = todoListToCheck.find(function(todo){
+                return todo.id === todoId;     
+            })
+        }
+        return returnedValue;
     }
+    
+    function deleteTodo(todoId) {
+        var foundTodo = findTodo(todoId);
+        for (var i = 0; i < allTodoLists.length; i++) {
+            var arrayWithTodo = allTodoLists[i].includes(foundTodo);
+            if (arrayWithTodo) {
+                allTodoLists[i].splice(foundTodo, 1);
+            }
+        }
+    }
+    // function deleteTodo(todoListPosition, todoPosition) {
+    //     allTodoLists[todoListPosition].splice(todoPosition, 1);
+    // }
     
     function deleteAll(todoList) {
         todoList.splice(0, todoList.length);
     }
     
-    function changeTodo(todoListPosition, todoPosition, todoText) {
-        var arrayPosition = allTodoLists[todoListPosition];
-        arrayPosition[todoPosition].todo = todoText;
+    function changeTodo(todoId, newTodo) {
+        var foundTodo = findTodo(todoId);
+        foundTodo.todo = newTodo;
     }
     
-    function toggleCompleted(todoListPosition, todoPosition) {
-        var arrayPosition = allTodoLists[todoListPosition];
-        arrayPosition[todoPosition].completed = !arrayPosition[todoPosition].completed
+    function toggleCompleted(todoId) {
+        var foundTodo = findTodo(todoId);
+        foundTodo.completed = !foundTodo.completed;
     }
     
     function toggleAll(todoListPosition) {
@@ -81,6 +102,14 @@
     createTodoList();
     addTodo(1, 'first');
     addTodo(1, 'second');
+    addTodo(0, 'third');
+    addTodo(0, 'fourth');
+    addTodo(1, 'fifth');
     toggleCompleted(1, 1);
-    changeTodo(1, 1, 'test');
+    changeTodo(1, 'test');
+    displayTodos(0);
     displayTodos(1);
+
+
+
+    
