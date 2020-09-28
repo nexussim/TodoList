@@ -24,7 +24,6 @@
         }
         addTodoCounter++
         allTodoLists[position].push(newTodo)
-
     }
 
     function findTodo(todoId) {
@@ -53,8 +52,13 @@
         }
     }
     
-    function deleteAll(todoList) {
-        todoList.splice(0, todoList.length);
+    function deleteTodoList(todoList) {
+        allTodoLists.splice(todoList, 1);
+    }
+
+    function deleteAll() {
+        allTodoLists.splice(0);
+        console.log('You have no todos!')
     }
     
     function changeTodo(todoId, newTodo) {
@@ -89,18 +93,17 @@
         }) 
     }
         
-    function displayTodos(todoListPosition) {
+    function displayTodoList(todoListPosition) {
         var arrayPosition = allTodoLists[todoListPosition];
         console.log("My Todos: ");
-        for (var i = 0; i < arrayPosition.length; i++) {
-            console.log(arrayPosition[i]);
-            
-        }
+        arrayPosition.forEach(function(todo){
+            console.log(todo);
+        })
     }
 
 
 
-
+/* Less repetition. Calls done automatically to test for bugs and for immediate feedback */
     createTodoList();
     createTodoList();
     addTodo(1, 'first');
@@ -108,10 +111,14 @@
     addTodo(0, 'third');
     addTodo(0, 'fourth');
     addTodo(1, 'fifth');
+    addTodo(1, 'sixth');
+    addTodo(0, 'seventh');
     toggleCompleted(1, 1);
+    toggleCompleted(2, 1);
     changeTodo(1, 'test');
-    displayTodos(0);
-    displayTodos(1);
+    changeTodo(3, 'test');
+    displayTodoList(0);
+    displayTodoList(1);
 
 
 
