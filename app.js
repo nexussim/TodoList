@@ -7,15 +7,37 @@
     //filter active, completed, all
     //clear completed
 
-    var allTodoLists = [];
-    var addTodoCounter = 0;
+    
+    var arrayWithResults = [];
+    var findTodoResult;
+    
+    let allTodoLists = [
+        {
+          todo: "third", completed: true, id: 2,
+          nestedTodos: [
+            { todo: "fourth", completed: true, id: 3,},
+            { todo: "fifth", completed: true, id: 4,
+              nestedTodos:[
+                 { todo: "nestFromHere", completed: false, id: 7,},
+              ]
+            },
+            { todo: "eighth", completed: true, id: 8,
+              nestedTodos:[
+                 { todo: "nineth", completed: false, id: 9,},
+              ]
+            },
+            { todo: "sixth", completed: true, id: 5,},
+            { todo: "seventh", completed: true, id: 6,},
+          ],
+        },
+      ];
 
     function createTodoList() {
         allTodoLists.push([]);
     }
 
     function addTodo(position, todo) {
-        arrayPosition = allTodoLists[position];
+
         
         var newTodo = {
             todo: todo,
@@ -26,19 +48,33 @@
         allTodoLists[position].push(newTodo)
     }
 
-    function findTodo(todoId) {
-        for (var i = 0; i < allTodoLists.length; i++) {
-            if (returnedValue) {
-                return returnedValue;
-            }
-            var todoListToCheck = allTodoLists[i]
-            var returnedValue = todoListToCheck.find(function(todo){
-                return todo.id === todoId;
-            })
-        }
-        return returnedValue;
-    }
     
+    function findTodo(array, nestedTodos, todoId, newTodo) {
+        for (var i = 0; i < array.length; i++) {
+            var currentArrayElement = array[i];
+            if(currentArrayElement.id === todoId) {
+                result = currentArrayElement;
+                return result;
+            }
+            if (nestedTodos in currentArrayElement) {
+                for (var j = 0; j < currentArrayElement.nestedTodos.length; j++) {
+                    arrayWithResults.push(currentArrayElement.nestedTodos[j]);
+                }
+            } else if (array[i].length > 0) {
+                arrayWithResults.push(array[i]);
+            }
+        }
+        for (var m = 0; m < arrayWithResults.length; m++) {
+            if (findTodoResult) {
+                break;
+            }
+            var arrayWithResultsElement = arrayWithResults[m]
+            if (nestedTodos in arrayWithResultsElement)
+            findTodoResult = findTodo(arrayWithResults, nestedTodos, todoId, newTodo);
+        }
+        return findTodoResult;
+    }
+
     function deleteTodo(todoId) {
         var foundTodo = findTodo(todoId);
         for (var i = 0; i < allTodoLists.length; i++) {
@@ -61,14 +97,18 @@
         console.log('You have no todos!')
     }
     
-    function changeTodo(todoId, newTodo) {
-        var foundTodo = findTodo(todoId);
-        foundTodo.todo = newTodo;
+    function changeTodo(array, nestedTodos, todoId, newTodo) {
+        var returnValue = findTodo(array, nestedTodos, todoId, newTodo);
+        returnValue.todo = newTodo;
+        findTodoResult = undefined;
+        arrayWithResults = [];
     }
     
-    function toggleCompleted(todoId) {
-        var foundTodo = findTodo(todoId);
-        foundTodo.completed = !foundTodo.completed;
+    function toggleCompleted(array, nestedTodos, todoId) {
+        var returnValue = findTodo(array, nestedTodos, todoId);
+        returnValue.completed = !returnValue.completed;
+        findTodoResult = undefined;
+        arrayWithResults = [];
     }
     
     function toggleAll(todoListPosition) {
@@ -93,33 +133,12 @@
         }) 
     }
         
-    function displayTodoList(todoListPosition) {
-        var arrayPosition = allTodoLists[todoListPosition];
+    function displayTodoList(array, nestedTodos, todoId) {
+        var arrayPosition = findTodo(array, nestedTodos, todoId);
         console.log("My Todos: ");
-        arrayPosition.forEach(function(todo){
+        arrayWithResults.forEach(function(todo){
             console.log(todo);
         })
+        arrayWithResults = [];
     }
 
-
-
-/* Less repetition. Calls done automatically to test for bugs and for immediate feedback */
-    createTodoList();
-    createTodoList();
-    addTodo(1, 'first');
-    addTodo(1, 'second');
-    addTodo(0, 'third');
-    addTodo(0, 'fourth');
-    addTodo(1, 'fifth');
-    addTodo(1, 'sixth');
-    addTodo(0, 'seventh');
-    toggleCompleted(1, 1);
-    toggleCompleted(2, 1);
-    changeTodo(1, 'test');
-    changeTodo(3, 'test');
-    displayTodoList(0);
-    displayTodoList(1);
-
-
-
-    
