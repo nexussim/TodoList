@@ -14,21 +14,23 @@
     
     let allTodoLists = [
         {
-          todo: "third", completed: true, id: 2, parentTodoId: '?',
+          todo: "third", completed: false, id: 2, parentTodoId: '?',
           nestedTodos: [
-            { todo: "fourth", completed: true, id: 3, parentTodoId: 2},
-            { todo: "fifth", completed: true, id: 4, parentTodoId: 2,
+            { todo: "fourth", completed: false, id: 3, parentTodoId: 2},
+            { todo: "fifth", completed: false, id: 4, parentTodoId: 2,
               nestedTodos:[
                  { todo: "nestFromHere", completed: false, id: 7, parentTodoId: 4},
+                 { todo: "nestFromHere", completed: false, id: 10, parentTodoId: 4},
+                    
               ]
             },
-            { todo: "eighth", completed: true, id: 8, parentTodoId: 2,
+            { todo: "eighth", completed: false, id: 8, parentTodoId: 2,
               nestedTodos:[
                  { todo: "nineth", completed: false, id: 9, parentTodoId: 8},
               ]
             },
-            { todo: "sixth", completed: true, id: 5, parentTodoId: 2},
-            { todo: "seventh", completed: true, id: 6, parentTodoId: 2},
+            { todo: "sixth", completed: false, id: 5, parentTodoId: 2},
+            { todo: "seventh", completed: false, id: 6, parentTodoId: 2},
           ],
         },
       ];
@@ -49,7 +51,7 @@
         allTodoLists[position].push(newTodo)
     }
     
-    function flattenTodoList(list, todoId) {
+    function flattenTodoList(list) {
             
         var result = [];
 
@@ -82,7 +84,6 @@
 
     }
 
-
     function deleteTodo(array, todoId) {
         var returnValue = flattenTodoList(array, todoId);
         var foundTodo = findTodoWithId(returnValue, todoId);
@@ -96,8 +97,10 @@
         }
     }
         
-    function deleteTodoList(todoList) {
-        allTodoLists.splice(todoList, 1);
+    function deleteTodoList(array, todoListId) {
+        var returnValue = flattenTodoList(array, todoListId);
+        var foundTodo = findTodoWithId(returnValue, todoListId);
+        foundTodo.nestedTodos.splice(0)
     }
 
     function deleteAll() {
@@ -109,6 +112,24 @@
         var returnValue = flattenTodoList(array, todoId);
         returnValue = findTodoWithId(returnValue, todoId);
         returnValue.todo = newTodo;
+    }
+
+    function toggleListCompleted(array, todoListId) {
+        var isNotCompleted = 0;
+        var returnValue = flattenTodoList(array);
+        var foundTodo = findTodoWithId(returnValue, todoListId);
+        for (var i = 0; i < foundTodo.nestedTodos.length; i++) {
+            if (foundTodo.nestedTodos[i].completed === false) {
+                isNotCompleted++;
+            }
+        }
+        for (var j = 0; j < foundTodo.nestedTodos.length; j++) {
+            if (isNotCompleted > 0) {
+                foundTodo.nestedTodos[j].completed = true;
+            } else {
+                foundTodo.nestedTodos[j].completed = false;
+            }
+        }
     }
     
 
@@ -134,7 +155,7 @@
         }) 
     }
         
-    function displayTodoList(array) {
+    function displayTodoList() {
         console.log("My Todos:");
         console.log(allTodoLists);
     }
@@ -159,5 +180,5 @@
     //     })
     //     arrayWithResults = [];
     // }
-    
+
     */
