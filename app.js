@@ -9,25 +9,26 @@
 
     
     var arrayWithResults = [];
-    var findTodoResult;
+    var addTodoCounter = 0;
+
     
     let allTodoLists = [
         {
-          todo: "third", completed: true, id: 2,
+          todo: "third", completed: true, id: 2, parentTodoId: '?',
           nestedTodos: [
-            { todo: "fourth", completed: true, id: 3,},
-            { todo: "fifth", completed: true, id: 4,
+            { todo: "fourth", completed: true, id: 3, parentTodoId: 2},
+            { todo: "fifth", completed: true, id: 4, parentTodoId: 2,
               nestedTodos:[
-                 { todo: "nestFromHere", completed: false, id: 7,},
+                 { todo: "nestFromHere", completed: false, id: 7, parentTodoId: 4},
               ]
             },
-            { todo: "eighth", completed: true, id: 8,
+            { todo: "eighth", completed: true, id: 8, parentTodoId: 2,
               nestedTodos:[
-                 { todo: "nineth", completed: false, id: 9,},
+                 { todo: "nineth", completed: false, id: 9, parentTodoId: 8},
               ]
             },
-            { todo: "sixth", completed: true, id: 5,},
-            { todo: "seventh", completed: true, id: 6,},
+            { todo: "sixth", completed: true, id: 5, parentTodoId: 2},
+            { todo: "seventh", completed: true, id: 6, parentTodoId: 2},
           ],
         },
       ];
@@ -47,47 +48,54 @@
         addTodoCounter++
         allTodoLists[position].push(newTodo)
     }
-
     
-    function findTodo(array, nestedTodos, todoId, newTodo) {
-        for (var i = 0; i < array.length; i++) {
-            var currentArrayElement = array[i];
-            if(currentArrayElement.id === todoId) {
-                result = currentArrayElement;
-                return result;
-            }
-            if (nestedTodos in currentArrayElement) {
-                for (var j = 0; j < currentArrayElement.nestedTodos.length; j++) {
-                    arrayWithResults.push(currentArrayElement.nestedTodos[j]);
+    function flattenTodoList(list, todoId) {
+            
+        var result = [];
+
+        var stack = [list];
+        while(stack.length > 0) {
+            var a_List = stack.pop();
+            for (let todo of a_List) {
+                result.push(todo);
+                if('nestedTodos' in todo) {
+                    stack.push(todo.nestedTodos);
                 }
-            } else if (array[i].length > 0) {
-                arrayWithResults.push(array[i]);
             }
         }
-        for (var m = 0; m < arrayWithResults.length; m++) {
-            if (findTodoResult) {
+        return result;    
+    }
+
+    function findTodoWithId(returnValue, todoId) {
+        for (var i = 0; i < returnValue.length; i++) {
+            if (returnValue[i].id === todoId) {
+                var newReturnValue = returnValue[i];
+            }
+        }
+        return newReturnValue;
+    }
+
+    function toggleCompleted(array, todoId) {
+        var returnValue = flattenTodoList(array, todoId);
+        returnValue = findTodoWithId(returnValue, todoId);
+        returnValue.completed = !returnValue.completed;
+
+    }
+
+
+    function deleteTodo(array, todoId) {
+        var returnValue = flattenTodoList(array, todoId);
+        var foundTodo = findTodoWithId(returnValue, todoId);
+        var foundTodoParent = foundTodo.parentTodoId
+        for (var i = 0; i < returnValue.length; i++) {
+            if (foundTodoParent === returnValue[i].id) {
+                var indexToSplice = returnValue[i].nestedTodos.indexOf(foundTodo);
+                returnValue[i].nestedTodos.splice(indexToSplice, 1);
                 break;
             }
-            var arrayWithResultsElement = arrayWithResults[m]
-            if (nestedTodos in arrayWithResultsElement)
-            findTodoResult = findTodo(arrayWithResults, nestedTodos, todoId, newTodo);
-        }
-        return findTodoResult;
-    }
-
-    function deleteTodo(todoId) {
-        var foundTodo = findTodo(todoId);
-        for (var i = 0; i < allTodoLists.length; i++) {
-            var arrayWithTodo = allTodoLists[i].includes(foundTodo);
-            if (arrayWithTodo) {
-                var todoIndex = allTodoLists[i].indexOf(foundTodo);
-                var arrayTodoIsIn = allTodoLists[i];
-                arrayTodoIsIn.splice(todoIndex, 1);
-                return;
-            }
         }
     }
-    
+        
     function deleteTodoList(todoList) {
         allTodoLists.splice(todoList, 1);
     }
@@ -97,20 +105,13 @@
         console.log('You have no todos!')
     }
     
-    function changeTodo(array, nestedTodos, todoId, newTodo) {
-        var returnValue = findTodo(array, nestedTodos, todoId, newTodo);
+    function changeTodo(array, todoId, newTodo) {
+        var returnValue = flattenTodoList(array, todoId);
+        returnValue = findTodoWithId(returnValue, todoId);
         returnValue.todo = newTodo;
-        findTodoResult = undefined;
-        arrayWithResults = [];
     }
     
-    function toggleCompleted(array, nestedTodos, todoId) {
-        var returnValue = findTodo(array, nestedTodos, todoId);
-        returnValue.completed = !returnValue.completed;
-        findTodoResult = undefined;
-        arrayWithResults = [];
-    }
-    
+
     function toggleAll(todoListPosition) {
         var isNotCompleted = 0;
         var arrayPosition = allTodoLists[todoListPosition];
@@ -133,12 +134,30 @@
         }) 
     }
         
-    function displayTodoList(array, nestedTodos, todoId) {
-        var arrayPosition = findTodo(array, nestedTodos, todoId);
-        console.log("My Todos: ");
-        arrayWithResults.forEach(function(todo){
-            console.log(todo);
-        })
-        arrayWithResults = [];
+    function displayTodoList(array) {
+        console.log("My Todos:");
+        console.log(allTodoLists);
     }
 
+
+
+
+
+
+
+
+
+
+
+    /* Old displayTodoList
+
+    // function displayTodoList(array, nestedTodos, todoId) {
+    //     var arrayPosition = findTodo(array, nestedTodos, todoId);
+    //     console.log("My Todos: ");
+    //     arrayWithResults.forEach(function(todo){
+    //         console.log(todo);
+    //     })
+    //     arrayWithResults = [];
+    // }
+    
+    */
