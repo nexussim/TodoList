@@ -10,44 +10,28 @@
     var arrayWithResults = [];
     var addTodoCounter = 0;
 
+    var allTodoLists = [];
     
-    let allTodoLists = [
-        {
-          todo: "third", completed: false, id: 2, parentTodoId: '?',
-          nestedTodos: [
-            { todo: "fourth", completed: false, id: 3, parentTodoId: 2},
-            { todo: "fifth", completed: false, id: 4, parentTodoId: 2,
-              nestedTodos:[
-                 { todo: "nestFromHere", completed: false, id: 7, parentTodoId: 4},
-                 { todo: "nestFromHere", completed: false, id: 10, parentTodoId: 4},
-                    
-              ]
-            },
-            { todo: "eighth", completed: false, id: 8, parentTodoId: 2,
-              nestedTodos:[
-                 { todo: "nineth", completed: false, id: 9, parentTodoId: 8},
-              ]
-            },
-            { todo: "sixth", completed: false, id: 5, parentTodoId: 2},
-            { todo: "seventh", completed: false, id: 6, parentTodoId: 2},
-          ],
-        },
-      ];
 
-    function createTodoList() {
-        allTodoLists.push([]);
-    }
+    function addTodo(todoList, todo, todoId) {
 
-    function addTodo(position, todo) {
-
-        
         var newTodo = {
             todo: todo,
             completed: false,
             id: addTodoCounter,
+            nestedTodos: [],
+            parentTodoId: 0
         }
-        addTodoCounter++
-        allTodoLists[position].push(newTodo)
+        if (allTodoLists.length > 0) {
+            var returnValue = findTodoWithId(todoList, todoId);
+            addTodoCounter++;
+            newTodo.parentTodoId = returnValue.id; 
+            returnValue.nestedTodos.push(newTodo);
+        } 
+        if (allTodoLists.length === 0) {
+            addTodoCounter++;
+            allTodoLists.push(newTodo);
+        }
     }
     
     function flattenTodoList(list) {
@@ -57,7 +41,7 @@
         var stack = [list];
         while(stack.length > 0) {
             var a_List = stack.pop();
-            for (let todo of a_List) {
+            for (var todo of a_List) {
                 result.push(todo);
                 if('nestedTodos' in todo) {
                     stack.push(todo.nestedTodos);
@@ -68,7 +52,7 @@
     }
 
     function findTodoWithId(todoList, todoId) {
-        let flatten = flattenTodoList(todoList);
+        var flatten = flattenTodoList(todoList);
         for (var i = 0; i < flatten.length; i++) {
             if (flatten[i].id === todoId) {
                 var newReturnValue = flatten[i];
@@ -78,7 +62,7 @@
     }
 
     function toggleCompleted(todoList, todoId) {
-        returnValue = findTodoWithId(todoList, todoId);
+        var returnValue = findTodoWithId(todoList, todoId);
         returnValue.completed = !returnValue.completed;
 
     }
@@ -107,7 +91,7 @@
     }
     
     function changeTodo(todoList, todoId, newTodo) {
-        returnValue = findTodoWithId(todoList, todoId);
+        var returnValue = findTodoWithId(todoList, todoId);
         returnValue.todo = newTodo;
     }
 
@@ -162,3 +146,33 @@
             console.log(todo);
         })
     }
+
+
+
+
+/* Data Structure Prototype:
+
+    // var allTodoLists = [
+    //     {
+    //       todo: "third", completed: false, id: 2, parentTodoId: '?',
+    //       nestedTodos: [
+    //         { todo: "fourth", completed: false, id: 3, parentTodoId: 2},
+    //         { todo: "fifth", completed: false, id: 4, parentTodoId: 2,
+    //           nestedTodos:[
+    //              { todo: "nestFromHere", completed: false, id: 7, parentTodoId: 4},
+    //              { todo: "nestFromHere", completed: false, id: 10, parentTodoId: 4},
+                    
+    //           ]
+    //         },
+    //         { todo: "eighth", completed: false, id: 8, parentTodoId: 2,
+    //           nestedTodos:[
+    //              { todo: "nineth", completed: false, id: 9, parentTodoId: 8},
+    //           ]
+    //         },
+    //         { todo: "sixth", completed: false, id: 5, parentTodoId: 2},
+    //         { todo: "seventh", completed: false, id: 6, parentTodoId: 2},
+    //       ],
+    //     },
+    //   ];
+
+    */
