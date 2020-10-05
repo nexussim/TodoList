@@ -1,4 +1,3 @@
-
 //Features to add
     //nested todos
     //change todos input box
@@ -68,18 +67,18 @@
         return result;    
     }
 
-    function findTodoWithId(returnValue, todoId) {
-        for (var i = 0; i < returnValue.length; i++) {
-            if (returnValue[i].id === todoId) {
-                var newReturnValue = returnValue[i];
+    function findTodoWithId(todoList, todoId) {
+        let flatten = flattenTodoList(todoList);
+        for (var i = 0; i < flatten.length; i++) {
+            if (flatten[i].id === todoId) {
+                var newReturnValue = flatten[i];
             }
         }
         return newReturnValue;
     }
 
-    function toggleCompleted(array, todoId) {
-        var returnValue = flattenTodoList(array, todoId);
-        returnValue = findTodoWithId(returnValue, todoId);
+    function toggleCompleted(todoList, todoId) {
+        returnValue = findTodoWithId(todoList, todoId);
         returnValue.completed = !returnValue.completed;
 
     }
@@ -97,9 +96,8 @@
         }
     }
         
-    function deleteTodoList(array, todoListId) {
-        var returnValue = flattenTodoList(array, todoListId);
-        var foundTodo = findTodoWithId(returnValue, todoListId);
+    function deleteTodoList(todoList, todoListId) {
+        var foundTodo = findTodoWithId(todoList, todoListId);
         foundTodo.nestedTodos.splice(0)
     }
 
@@ -108,16 +106,14 @@
         console.log('You have no todos!')
     }
     
-    function changeTodo(array, todoId, newTodo) {
-        var returnValue = flattenTodoList(array, todoId);
-        returnValue = findTodoWithId(returnValue, todoId);
+    function changeTodo(todoList, todoId, newTodo) {
+        returnValue = findTodoWithId(todoList, todoId);
         returnValue.todo = newTodo;
     }
 
-    function toggleListCompleted(array, todoListId) {
+    function toggleListCompleted(todoList, todoListId) {
         var isNotCompleted = 0;
-        var returnValue = flattenTodoList(array);
-        var foundTodo = findTodoWithId(returnValue, todoListId);
+        var foundTodo = findTodoWithId(todoList, todoListId);
         for (var i = 0; i < foundTodo.nestedTodos.length; i++) {
             if (foundTodo.nestedTodos[i].completed === false) {
                 isNotCompleted++;
@@ -132,13 +128,12 @@
         }
     }
     
-
-    function toggleAll(todoListPosition) {
+    function toggleAll(todoList) {
         var isNotCompleted = 0;
-        var arrayPosition = allTodoLists[todoListPosition];
+        var returnValue = flattenTodoList(todoList);
         /* Check if todo is true or false and increment. */
         
-        arrayPosition.forEach(function (todo) {
+        returnValue.forEach(function (todo) {
             if (todo.completed === false) {
                 isNotCompleted++;
             }
@@ -146,7 +141,7 @@
     
         /* Set all todos to true or false */
     
-        arrayPosition.forEach(function (todo) {
+        returnValue.forEach(function (todo) {
             if (isNotCompleted > 0) {
                 todo.completed = true;
             } else {
@@ -160,25 +155,10 @@
         console.log(allTodoLists);
     }
 
-
-
-
-
-
-
-
-
-
-
-    /* Old displayTodoList
-
-    // function displayTodoList(array, nestedTodos, todoId) {
-    //     var arrayPosition = findTodo(array, nestedTodos, todoId);
-    //     console.log("My Todos: ");
-    //     arrayWithResults.forEach(function(todo){
-    //         console.log(todo);
-    //     })
-    //     arrayWithResults = [];
-    // }
-
-    */
+    function displayAllTodos(todoList) {
+        var arrayPosition = flattenTodoList(todoList);
+        console.log("My Todos: ");
+        arrayPosition.forEach(function(todo){
+            console.log(todo);
+        })
+    }
